@@ -11,14 +11,16 @@ class Knight:
             self.square = square
         self.visited_squares = [self.square]
 
-    def getPossibleMoves(self):
+    def getPossibleMoves(self, *, visited=False):
         i = self.square % 8
         j = self.square // 8
         legal_moves = []
         for move in [(2,1),(1,2),(-1,2),(-2,1),(-2,-1),(-1,-2),(1,-2),(2,-1)]:
             if 0 <= i+move[0] < 8 and 0 <= j+move[1] < 8:
                 destination = (j+move[1])*8 + (i+move[0])
-                if destination not in self.visited_squares:
+                if not visited and (destination not in self.visited_squares):
+                    legal_moves.append(destination)
+                elif visited and (destination in self.visited_squares):
                     legal_moves.append(destination)
         return legal_moves
 
@@ -31,6 +33,33 @@ class Knight:
             self.visited_squares.append(destination)
 
     def startRandomWalk(self):
-        while self.getPossibleMoves():
-            self.move(random.choice(self.getPossibleMoves()))
+        while self.getPossibleMoves(visited=False):
+            self.move(random.choice(self.getPossibleMoves(visited=False)))
 
+    def pivotPath(self, pivot):
+        if pivot not in self.getPossibleMoves(visited=True):
+            print('%d is not a valid pivot')
+        else:
+            new_path = []
+            i = 0
+            old_path = k.visited_squares
+            while old_path[i] != pivot:
+                new_path.append(old_path[i])
+                i += 1
+            new_path.append(pivot)
+            i = -1
+            while old_path[i] != pivot:
+                new_path.append(old_path[i])
+                i -= 1
+            self.visited_squares = new_path
+            self.square = new_path[-1]
+
+    def unblock(self):
+        pivot = random.choice(self.getPossibleMoves(visited=True))
+        self.pivotPath(pivot)
+        self.startRandomWalk()
+
+    def traverseChessboard(self):
+        self.startRandomWalk()
+        while len(self.visited_squares) < 64:
+            self.unblock()
