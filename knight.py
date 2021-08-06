@@ -2,8 +2,8 @@ import random
 from chessboard import Chessboard
 
 class Knight:
-    def __init__(self, chessboard=Chessboard(), square=-1):
-        self.chessboard = chessboard
+    def __init__(self, chessboard=None, square=-1):
+        self.chessboard = Chessboard() if chessboard is None else chessboard
         if square == -1:
             self.square = random.randint(0, self.chessboard.nrank * self.chessboard.nfile - 1)
             print('initializing at random square %d' % self.square)
@@ -53,7 +53,7 @@ class Knight:
             self.visited_squares = new_path
             self.square = new_path[-1]
     def unblock(self):
-        pivot = random.choice(self.getPossibleMoves(visited=True))
+        pivot = random.choice(list(set(self.getPossibleMoves(visited=True)).difference({self.visited_squares[-2]})))
         self.pivotPath(pivot)
         self.randomWalk()
     def traverseChessboard(self):
