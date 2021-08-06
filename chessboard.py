@@ -11,5 +11,4 @@ class Chessboard:
         plt.imshow(chessboard, cmap='gray')
         plt.xticks(range(self.nfile),list(string.ascii_uppercase[:self.nfile]))
         plt.yticks(range(self.nrank),range(self.nrank,1-1,-1))
-        plt.show()
 

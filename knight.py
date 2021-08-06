@@ -41,7 +41,7 @@ class Knight:
         else:
             new_path = []
             i = 0
-            old_path = k.visited_squares
+            old_path = self.visited_squares
             while old_path[i] != pivot:
                 new_path.append(old_path[i])
                 i += 1
@@ -60,4 +60,16 @@ class Knight:
         self.randomWalk()
         while len(self.visited_squares) < self.chessboard.nrank * self.chessboard.nfile:
             self.unblock()
+    def plotTraversal(self):
+        self.chessboard.plot()
+        for i in range(len(self.visited_squares) - 1):
+            tail = self.visited_squares[i]
+            head = self.visited_squares[i+1]
+            x_tail = tail % self.chessboard.nfile
+            y_tail = tail // self.chessboard.nrank
+            x_head = head % self.chessboard.nfile
+            y_head = head // self.chessboard.nrank
+            plt.arrow(x_tail, y_tail, x_head-x_tail, y_head-y_tail, head_width=0.1, color='red')
+        plt.show()
+
 
