@@ -1,29 +1,30 @@
 import random
+from chessboard import Chessboard
+
 class Knight:
-    def __init__(self, square=-1):
+    def __init__(self, chessboard=Chessboard(), square=-1):
+        self.chessboard = chessboard
         if square == -1:
-            self.square = random.randint(0,63)
+            self.square = random.randint(0, self.chessboard.nrank * self.chessboard.nfile - 1)
             print('initializing at random square %d' % self.square)
-        elif not (0 <= square < 63):
-            self.square = random.randint(0,63)
+        elif not (0 <= square < self.chessboard.nrank * self.chessboard.nfile - 1):
+            self.square = random.randint(0, self.chessboard.nrank * self.chessboard.nfile - 1)
             print('%d is not a legal square on the chessboard; initializing at random square %d' % (square, self.square))
         else:
             self.square = square
         self.visited_squares = [self.square]
-
     def getPossibleMoves(self, *, visited=False):
-        i = self.square % 8
-        j = self.square // 8
+        i = self.square % self.chessboard.nfile
+        j = self.square // self.chessboard.nrank
         legal_moves = []
         for move in [(2,1),(1,2),(-1,2),(-2,1),(-2,-1),(-1,-2),(1,-2),(2,-1)]:
-            if 0 <= i+move[0] < 8 and 0 <= j+move[1] < 8:
-                destination = (j+move[1])*8 + (i+move[0])
+            if 0 <= i+move[0] < self.chessboard.nfile and 0 <= j+move[1] < self.chessboard.nrank:
+                destination = (j+move[1])*self.chessboard.nfile + (i+move[0])
                 if not visited and (destination not in self.visited_squares):
                     legal_moves.append(destination)
                 elif visited and (destination in self.visited_squares):
                     legal_moves.append(destination)
         return legal_moves
-
     def move(self, destination):
         if destination not in self.getPossibleMoves():
             print('Knight cannot reach square %d from square %d' % (destination, self.square))
@@ -31,11 +32,9 @@ class Knight:
         else:
             self.square = destination
             self.visited_squares.append(destination)
-
-    def startRandomWalk(self):
+    def randomWalk(self):
         while self.getPossibleMoves(visited=False):
             self.move(random.choice(self.getPossibleMoves(visited=False)))
-
     def pivotPath(self, pivot):
         if pivot not in self.getPossibleMoves(visited=True):
             print('%d is not a valid pivot')
@@ -53,13 +52,12 @@ class Knight:
                 i -= 1
             self.visited_squares = new_path
             self.square = new_path[-1]
-
     def unblock(self):
         pivot = random.choice(self.getPossibleMoves(visited=True))
         self.pivotPath(pivot)
-        self.startRandomWalk()
-
+        self.randomWalk()
     def traverseChessboard(self):
-        self.startRandomWalk()
-        while len(self.visited_squares) < 64:
+        self.randomWalk()
+        while len(self.visited_squares) < self.chessboard.nrank * self.chessboard.nfile:
             self.unblock()
+
