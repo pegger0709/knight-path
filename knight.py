@@ -1,7 +1,5 @@
 import random
-import numpy as np
-import matplotlib.pyplot as plt
-from chessboard import Chessboard
+from chessboard import *
 
 class Knight:
     """
