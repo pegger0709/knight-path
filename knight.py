@@ -60,6 +60,14 @@ class Knight:
             self.square = square
         self.visited_squares = [self.square]
 
+    def __repr__(self):
+        repr = 'knight is located at square %d' % self.square
+        repr += '\n'
+        repr += 'knight has visited squares ' + str(self.visited_squares)
+        repr += '\n'
+        repr += 'knight has not visited squares ' + str(list(set(range(self.chessboard.nrank * self.chessboard.nfile)).difference(set(self.visited_squares))))
+        return repr
+
     def getPossibleMoves(self, *, visited=False):
         """
         Finds all squares accessible to the knight from the current square by one knight's move
